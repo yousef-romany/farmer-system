@@ -1,101 +1,212 @@
-import Image from "next/image";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Sidebar } from "@/components/layout/sidebar"
+import { formatCurrency, formatNumber } from "@/lib/utils"
+import { ArrowDown, ArrowUp, MilkIcon as Cow, DollarSign, Pill, Scale, Warehouse } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { BarChart, LineChart, PieChart } from "@/components/charts"
 
 export default function Home() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <div className="flex min-h-screen">
+      <div className="hidden w-64 md:block">
+        <Sidebar />
+      </div>
+      <div className="flex-1">
+        <div className="flex h-14 items-center border-b px-4">
+          <h1 className="text-xl font-bold">لوحة التحكم</h1>
+          <div className="ml-auto flex items-center gap-4">
+            <div className="relative">
+              <Input type="search" placeholder="بحث..." className="w-64 pl-8" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground"
+              >
+                <circle cx="11" cy="11" r="8" />
+                <path d="m21 21-4.35-4.35" />
+              </svg>
+            </div>
+            <Button>إضافة ماشية</Button>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+        <main className="p-4 md:p-6">
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <CardTitle className="text-sm font-medium">إجمالي المواشي</CardTitle>
+                <Cow className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{formatNumber(120)}</div>
+                <p className="text-xs text-muted-foreground">
+                  <span className="text-green-500 inline-flex items-center">
+                    <ArrowUp className="h-3 w-3 mr-1" />
+                    {formatNumber(5)}
+                  </span>{" "}
+                  منذ الشهر الماضي
+                </p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <CardTitle className="text-sm font-medium">إشغال العنابر</CardTitle>
+                <Warehouse className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">85%</div>
+                <p className="text-xs text-muted-foreground">
+                  <span className="text-green-500 inline-flex items-center">
+                    <ArrowUp className="h-3 w-3 mr-1" />
+                    10%
+                  </span>{" "}
+                  منذ الشهر الماضي
+                </p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <CardTitle className="text-sm font-medium">متوسط الوزن</CardTitle>
+                <Scale className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{formatNumber(450)} كجم</div>
+                <p className="text-xs text-muted-foreground">
+                  <span className="text-green-500 inline-flex items-center">
+                    <ArrowUp className="h-3 w-3 mr-1" />
+                    {formatNumber(15)} كجم
+                  </span>{" "}
+                  منذ الشهر الماضي
+                </p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <CardTitle className="text-sm font-medium">إجمالي المصروفات</CardTitle>
+                <DollarSign className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{formatCurrency(25000)}</div>
+                <p className="text-xs text-muted-foreground">
+                  <span className="text-red-500 inline-flex items-center">
+                    <ArrowDown className="h-3 w-3 mr-1" />
+                    {formatCurrency(2000)}
+                  </span>{" "}
+                  منذ الشهر الماضي
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+
+          <Tabs defaultValue="overview" className="mt-6">
+            <TabsList>
+              <TabsTrigger value="overview">نظرة عامة</TabsTrigger>
+              <TabsTrigger value="analytics">التحليلات</TabsTrigger>
+              <TabsTrigger value="reports">التقارير</TabsTrigger>
+            </TabsList>
+            <TabsContent value="overview" className="space-y-4">
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
+                <Card className="lg:col-span-4">
+                  <CardHeader>
+                    <CardTitle>تطور الأوزان</CardTitle>
+                    <CardDescription>متوسط زيادة الوزن خلال الستة أشهر الماضية</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <LineChart className="h-[300px]" />
+                  </CardContent>
+                </Card>
+                <Card className="lg:col-span-3">
+                  <CardHeader>
+                    <CardTitle>توزيع المواشي حسب السلالة</CardTitle>
+                    <CardDescription>نسبة كل سلالة من إجمالي المواشي</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <PieChart className="h-[300px]" />
+                  </CardContent>
+                </Card>
+              </div>
+
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
+                <Card className="lg:col-span-4">
+                  <CardHeader>
+                    <CardTitle>أحدث التحديثات</CardTitle>
+                    <CardDescription>آخر الإجراءات التي تمت على النظام</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      {[1, 2, 3, 4, 5].map((i) => (
+                        <div key={i} className="flex items-start gap-4 rounded-lg border p-3">
+                          <div className="rounded-full bg-primary/10 p-2">
+                            {i % 3 === 0 ? (
+                              <Cow className="h-4 w-4 text-primary" />
+                            ) : i % 3 === 1 ? (
+                              <Scale className="h-4 w-4 text-primary" />
+                            ) : (
+                              <Pill className="h-4 w-4 text-primary" />
+                            )}
+                          </div>
+                          <div className="flex-1">
+                            <p className="text-sm font-medium">
+                              {i % 3 === 0
+                                ? "تمت إضافة ماشية جديدة"
+                                : i % 3 === 1
+                                  ? "تم تحديث وزن الماشية #1234"
+                                  : "تم إعطاء دواء للماشية #5678"}
+                            </p>
+                            <p className="text-xs text-muted-foreground">منذ {i} ساعات</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+                <Card className="lg:col-span-3">
+                  <CardHeader>
+                    <CardTitle>المصروفات الشهرية</CardTitle>
+                    <CardDescription>توزيع المصروفات حسب الفئة</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <BarChart className="h-[300px]" />
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+            <TabsContent value="analytics">
+              <Card>
+                <CardHeader>
+                  <CardTitle>التحليلات</CardTitle>
+                  <CardDescription>تحليلات مفصلة عن أداء المزرعة</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="h-[400px] flex items-center justify-center border rounded-lg">
+                    <p className="text-muted-foreground">بيانات التحليلات ستظهر هنا</p>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+            <TabsContent value="reports">
+              <Card>
+                <CardHeader>
+                  <CardTitle>التقارير</CardTitle>
+                  <CardDescription>تقارير مفصلة عن المزرعة</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="h-[400px] flex items-center justify-center border rounded-lg">
+                    <p className="text-muted-foreground">بيانات التقارير ستظهر هنا</p>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
+        </main>
+      </div>
     </div>
-  );
+  )
 }
+
