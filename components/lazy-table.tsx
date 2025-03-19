@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import { useState, useEffect } from "react"
@@ -35,7 +36,7 @@ export function LazyTable<T>({ columns, data, pageSize = 10 }: LazyTableProps<T>
       sorting,
       globalFilter,
     },
-    onSortingChange: setSorting,
+    onSortingChange: setSorting as any,
     onGlobalFilterChange: setGlobalFilter,
   })
 
@@ -57,7 +58,7 @@ export function LazyTable<T>({ columns, data, pageSize = 10 }: LazyTableProps<T>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
-                <TableHead key={header.id}>
+                <TableHead className="text-center" key={header.id}>
                   {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                 </TableHead>
               ))}
@@ -69,7 +70,7 @@ export function LazyTable<T>({ columns, data, pageSize = 10 }: LazyTableProps<T>
             table.getRowModel().rows.map((row) => (
               <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
                 {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
+                  <TableCell key={cell.id} className="text-center">{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                 ))}
               </TableRow>
             ))
