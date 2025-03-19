@@ -1,11 +1,18 @@
-"use client"
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Dialog,
   DialogContent,
@@ -13,57 +20,108 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
+} from "@/components/ui/dialog";
+import { fetchBarnList } from "@/constant/Barns.ifno";
+import { updateLiveStockOne } from "@/constant/LiveStock.info";
+import { toast } from "@/hooks/use-toast";
 
 interface Livestock {
-  id: string
-  tagNumber: string
-  breed: string
-  age: number
-  weight: number
-  barn: string
-  addedDate: string
-  status: string
+  id: string;
+  idintifer_number: number;
+  type: string;
+  age: number;
+  weight: number;
+  barn_id: number;
+  barns_name: string;
+  create_at: string;
+  status: "normal" | "under_eye";
 }
 
 interface EditLivestockModalProps {
-  isOpen: boolean
-  onClose: () => void
-  livestock: Livestock | null
+  isOpen: boolean;
+  onClose: () => void;
+  livestock: Livestock | null;
 }
 
-export function EditLivestockModal({ isOpen, onClose, livestock }: EditLivestockModalProps) {
-  const [tagNumber, setTagNumber] = useState("")
-  const [breed, setBreed] = useState("")
-  const [age, setAge] = useState("")
-  const [weight, setWeight] = useState("")
-  const [barn, setBarn] = useState("")
-  const [status, setStatus] = useState("")
+export function EditLivestockModal({
+  isOpen,
+  onClose,
+  livestock,
+}: EditLivestockModalProps) {
+  const [tagNumber, setTagNumber] = useState<any>("");
+  const [breed, setBreed] = useState<any>("");
+  const [age, setAge] = useState<any>("");
+  const [weight, setWeight] = useState<any>("");
+  const [barn, setBarn] = useState<any>("");
+  const [status, setStatus] = useState<any>("");
+  const [barnsList, setBarnsList] = useState<any[]>([]);
 
   useEffect(() => {
     if (livestock) {
-      setTagNumber(livestock.tagNumber)
-      setBreed(livestock.breed)
-      setAge(livestock.age.toString())
-      setWeight(livestock.weight.toString())
-      setBarn(livestock.barn)
-      setStatus(livestock.status)
+      setTagNumber(livestock.idintifer_number);
+      setBreed(livestock.type);
+      setAge(livestock.age.toString());
+      setWeight(livestock.weight.toString());
+      setBarn(livestock.barn_id);
+      setStatus(livestock.status);
     }
-  }, [livestock])
+  }, [livestock]);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     // هنا يمكنك إضافة المنطق الخاص بتحديث معلومات الماشية
-    console.log("تحديث معلومات الماشية:", { tagNumber, breed, age, weight, barn, status })
-    onClose()
-  }
+    console.log("تحديث معلومات الماشية:", {
+      tagNumber,
+      breed,
+      age,
+      weight,
+      barn,
+      status,
+    });
+
+    try {
+      if (tagNumber && breed && age && weight && breed) {
+        await updateLiveStockOne(
+          tagNumber,
+          breed,
+          age,
+          weight,
+          barn,
+          String(livestock?.create_at),
+          status,
+          Number(livestock?.id)
+        );
+        toast({
+          variant: "default",
+          title: "تمت عمليه بنجاح",
+        });
+        onClose();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getBarns = async () => {
+    try {
+      setBarnsList(await fetchBarnList());
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getBarns();
+  }, []);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>تعديل معلومات الماشية</DialogTitle>
-          <DialogDescription>قم بتعديل معلومات الماشية هنا. اضغط على حفظ عند الانتهاء.</DialogDescription>
+          <DialogDescription>
+            قم بتعديل معلومات الماشية هنا. اضغط على حفظ عند الانتهاء.
+          </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit}>
           <div className="grid gap-4 py-4">
@@ -82,16 +140,13 @@ export function EditLivestockModal({ isOpen, onClose, livestock }: EditLivestock
               <label htmlFor="breed" className="text-right">
                 السلالة
               </label>
-              <Select value={breed} onValueChange={setBreed}>
-                <SelectTrigger className="col-span-3">
-                  <SelectValue placeholder="اختر السلالة" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="holstein">هولشتاين</SelectItem>
-                  <SelectItem value="simmental">سيمنتال</SelectItem>
-                  <SelectItem value="jersey">جيرسي</SelectItem>
-                </SelectContent>
-              </Select>
+              <Input
+                id="breed"
+                onChange={(e) => setBreed(e.target.value)}
+                value={breed}
+                className="col-span-3"
+                placeholder="السلالة"
+              />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <label htmlFor="age" className="text-right">
@@ -121,14 +176,20 @@ export function EditLivestockModal({ isOpen, onClose, livestock }: EditLivestock
               <label htmlFor="barn" className="text-right">
                 العنبر
               </label>
-              <Select value={barn} onValueChange={setBarn}>
+              <Select value={String(barn)} onValueChange={setBarn} dir="rtl">
                 <SelectTrigger className="col-span-3">
                   <SelectValue placeholder="اختر العنبر" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="عنبر 1">عنبر 1</SelectItem>
-                  <SelectItem value="عنبر 2">عنبر 2</SelectItem>
-                  <SelectItem value="عنبر 3">عنبر 3</SelectItem>
+                  {barnsList.length > 0 ? (
+                    barnsList.map((item) => (
+                      <SelectItem key={item.id} value={String(item.id)}>
+                        {item.barns_number}, {item.barns_name}
+                      </SelectItem>
+                    ))
+                  ) : (
+                    <p className="p-2 text-center">لا يوجد عنابر.</p>
+                  )}
                 </SelectContent>
               </Select>
             </div>
@@ -141,9 +202,8 @@ export function EditLivestockModal({ isOpen, onClose, livestock }: EditLivestock
                   <SelectValue placeholder="اختر الحالة" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="نشط">نشط</SelectItem>
-                  <SelectItem value="تحت المراقبة">تحت المراقبة</SelectItem>
-                  <SelectItem value="غير نشط">غير نشط</SelectItem>
+                  <SelectItem value="normal">نشط</SelectItem>
+                  <SelectItem value="under_eye">تحت المراقبة</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -154,6 +214,5 @@ export function EditLivestockModal({ isOpen, onClose, livestock }: EditLivestock
         </form>
       </DialogContent>
     </Dialog>
-  )
+  );
 }
-

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { Bell } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { formatDate } from "@/lib/utils"
 
 interface Notification {
   id: string
@@ -46,7 +47,7 @@ export function Notifications() {
         {notifications.map((notification) => (
           <DropdownMenuItem key={notification.id} className="flex flex-col items-start">
             <span>{notification.message}</span>
-            <span className="text-xs text-muted-foreground">{new Date(notification.date).toLocaleString()}</span>
+            <span className="text-xs text-muted-foreground">{formatDate(notification.date)}</span>
             <Button variant="link" size="sm" className="mt-1" onClick={() => markAsRead(notification.id)}>
               تحديد كمقروء
             </Button>

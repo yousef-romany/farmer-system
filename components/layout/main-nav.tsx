@@ -13,7 +13,7 @@ interface NavItem {
   icon: React.ReactNode
 }
 
-export function MainNav() {
+export function MainNav({ isCollapsed }: { isCollapsed?: boolean }) {
   const pathname = usePathname()
 
   const navItems: NavItem[] = [
@@ -68,10 +68,12 @@ export function MainNav() {
           className={cn(
             "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all hover:bg-primary/10",
             pathname === item.href ? "bg-primary/10 text-primary" : "text-muted-foreground",
+            isCollapsed && "justify-center px-2",
           )}
+          title={isCollapsed ? item.title : undefined}
         >
           {item.icon}
-          {item.title}
+          {!isCollapsed && item.title}
         </Link>
       ))}
     </nav>
