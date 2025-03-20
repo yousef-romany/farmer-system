@@ -16,13 +16,14 @@ import {
 } from "@/components/ui/dialog"
 
 interface WeightRecord {
-  id: string
-  date: string
-  livestockId: string
-  weight: number
-  change: number
-  recordedBy: string
-  notes: string
+  id: string;
+  liveStock_id: number;
+  weight: number;
+  net_weight: number;
+  comment: string;
+  create_at: string;
+  barns_name: string;
+  idintifer_number: number;
 }
 
 interface EditWeightModalProps {
@@ -40,11 +41,11 @@ export function EditWeightModal({ isOpen, onClose, weightRecord }: EditWeightMod
 
   useEffect(() => {
     if (weightRecord) {
-      setDate(weightRecord.date)
-      setLivestockId(weightRecord.livestockId)
+      setDate(weightRecord.create_at)
+      setLivestockId(String(weightRecord.liveStock_id))
       setWeight(weightRecord.weight.toString())
-      setRecordedBy(weightRecord.recordedBy)
-      setNotes(weightRecord.notes)
+      // setRecordedBy(weightRecord.recordedBy)
+      setNotes(weightRecord.comment)
     }
   }, [weightRecord])
 

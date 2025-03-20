@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import { useState } from "react"
@@ -11,11 +12,11 @@ import {
   flexRender,
 } from "@tanstack/react-table"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+// import { Input } from "@/components/ui/input"
 import { Sidebar } from "@/components/layout/sidebar"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { formatDate, formatNumber } from "@/lib/utils"
-import { Plus, Search } from "lucide-react"
+import { Plus } from "lucide-react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { AddMedicationModal } from "@/components/medications/add-medication-modal"
 import { EditMedicationModal } from "@/components/medications/edit-medication-modal"
@@ -195,7 +196,7 @@ export default function MedicationsPage() {
       sorting,
       globalFilter: filtering,
     },
-    onSortingChange: setSorting,
+    onSortingChange: setSorting as any,
     onGlobalFilterChange: setFiltering,
   })
 
@@ -210,7 +211,7 @@ export default function MedicationsPage() {
       sorting,
       globalFilter: filtering,
     },
-    onSortingChange: setSorting,
+    onSortingChange: setSorting as any,
     onGlobalFilterChange: setFiltering,
   })
 
@@ -220,19 +221,9 @@ export default function MedicationsPage() {
         <Sidebar />
       </div>
       <div className="flex-1">
-        <div className="flex h-14 items-center border-b px-4">
+        <div className="flex h-14 items-center border-b px-4 gap-3">
           <h1 className="text-xl font-bold">إدارة الأدوية</h1>
           <div className="ml-auto flex items-center gap-4">
-            <div className="relative">
-              <Input
-                type="search"
-                placeholder="بحث..."
-                value={filtering}
-                onChange={(e) => setFiltering(e.target.value)}
-                className="w-64 pl-8"
-              />
-              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-            </div>
             <Button onClick={() => setIsAddMedicationModalOpen(true)}>
               <Plus className="mr-2 h-4 w-4" /> إضافة دواء
             </Button>

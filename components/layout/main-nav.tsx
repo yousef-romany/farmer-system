@@ -5,7 +5,7 @@ import type React from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
-import { BarChart3, MilkIcon as Cow, Home, PiggyBank, Pill, Scale, Warehouse, BellRing } from "lucide-react"
+import { MilkIcon as Cow, Home, PiggyBank, Scale, Warehouse } from "lucide-react"
 
 interface NavItem {
   title: string
@@ -37,26 +37,26 @@ export function MainNav({ isCollapsed }: { isCollapsed?: boolean }) {
       href: "/weights",
       icon: <Scale className="h-5 w-5" />,
     },
+    // {
+    //   title: "الأدوية",
+    //   href: "/medications",
+    //   icon: <Pill className="h-5 w-5" />,
+    // },
     {
-      title: "الأدوية",
-      href: "/medications",
-      icon: <Pill className="h-5 w-5" />,
-    },
-    {
-      title: "المصروفات",
+      title: "خزنه",
       href: "/expenses",
       icon: <PiggyBank className="h-5 w-5" />,
     },
-    {
-      title: "التنبيهات",
-      href: "/alerts",
-      icon: <BellRing className="h-5 w-5" />,
-    },
-    {
-      title: "التقارير",
-      href: "/reports",
-      icon: <BarChart3 className="h-5 w-5" />,
-    },
+    // {
+    //   title: "التنبيهات",
+    //   href: "/alerts",
+    //   icon: <BellRing className="h-5 w-5" />,
+    // },
+    // {
+    //   title: "التقارير",
+    //   href: "/reports",
+    //   icon: <BarChart3 className="h-5 w-5" />,
+    // },
   ]
 
   return (

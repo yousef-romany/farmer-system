@@ -1,55 +1,216 @@
-"use client"
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
+import { useMemo } from "react";
 
 interface ChartProps {
-  className?: string
+  className?: string;
 }
 
-export function LineChart({ className }: ChartProps) {
+export function LineChart({ className, data }: any) {
+  // استخراج الأشهر بالترتيب من البيانات
+  const months = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو"];
+
+  // تحويل البيانات إلى قيم يمكن عرضها على المخطط
+  const chartData = months.map((month, index) => {
+    const monthData = data.filter(
+      (item: any) => new Date(item.create_at).getMonth() === index
+    );
+    const totalWeight = monthData.reduce((sum: number, item: any) => sum + item.weight, 0);
+    return totalWeight ? totalWeight / 10 : 0; // تحويل القيم إلى نسبة مئوية
+  });
   return (
     <div className={cn("w-full", className)}>
       <div className="h-full w-full rounded-lg bg-gradient-to-b from-primary/20 to-transparent p-4">
         <div className="flex h-full w-full items-end justify-between gap-2">
-          {[40, 30, 70, 80, 50, 90].map((height, i) => (
-            <div key={i} className="relative flex h-full w-full flex-col justify-end">
-              <div className="relative h-full w-full" style={{ height: `${height}%` }}>
-                <div className="absolute bottom-0 w-full rounded-md bg-primary" style={{ height: `${height}%` }} />
+          {chartData.map((height, i) => (
+            <div
+              key={i}
+              className="relative flex h-full w-full flex-col justify-end"
+            >
+              <div
+                className="relative h-full w-full"
+                style={{ height: `${height}%` }}
+              >
+                <div
+                  className="absolute bottom-0 w-full rounded-md bg-primary"
+                  style={{ height: `${height}%` }}
+                />
               </div>
-              <span className="mt-2 text-center text-xs">
-                {["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو"][i]}
+              <span className="mt-2 text-center text-xs">{months[i]}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function BarChart({
+  className,
+  data = [],
+}: {
+  className: any;
+  data: any[];
+}) {
+  const totalExpense = useMemo(() => {
+    return (
+      data?.reduce((sum: number, element: any) => {
+        if (element?.type === "buy" || element?.type === "expense") {
+          return sum + Number(element?.amount);
+        }
+        return sum;
+      }, 0) || 0
+    ); // منع القسمة على صفر
+  }, [data]);
+
+  const categoryTotals = useMemo(() => {
+    return data?.reduce(
+      (acc: Record<string, number>, element: any) => {
+        if (element?.type === "buy" || element?.type === "expense") {
+          acc[element?.category] =
+            (acc[element?.category] || 0) + Number(element?.amount);
+        }
+        return acc;
+      },
+      { food: 0, drug: 0, animal: 0, setting: 0, else: 0 }
+    );
+  }, [data]);
+
+  const categories = [
+    {
+      label: "علف",
+      value: (categoryTotals?.food / totalExpense || 0) * 100,
+      color: "bg-primary",
+    },
+    {
+      label: "أدوية",
+      value: (categoryTotals?.drug / totalExpense || 0) * 100,
+      color: "bg-blue-500",
+    },
+    {
+      label: "ماشيه",
+      value: (categoryTotals?.animal / totalExpense || 0) * 100,
+      color: "bg-pink-500",
+    },
+    {
+      label: "صيانة",
+      value: (categoryTotals?.setting / totalExpense || 0) * 100,
+      color: "bg-yellow-500",
+    },
+    {
+      label: "أخرى",
+      value: (categoryTotals["else"] / totalExpense || 0) * 100,
+      color: "bg-red-500",
+    },
+  ];
+
+  return (
+    <div className={cn("w-full", className)}>
+      <div className="h-full w-full rounded-lg p-4">
+        <div className="flex h-full w-full flex-col justify-between gap-8">
+          {categories?.map((item, i) => (
+            <div key={i} className="flex items-center gap-2">
+              <span className="w-16 text-sm">{item.label}</span>
+              <div className="flex-1 rounded-full bg-muted">
+                <div
+                  className={`h-4 rounded-full ${item.color}`}
+                  style={{ width: `${item.value}%` }}
+                />
+              </div>
+              <span className="w-12 text-sm">
+                {Number(item?.value)?.toFixed(2)}%
               </span>
             </div>
           ))}
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export function BarChart({ className }: ChartProps) {
+export function BarChartPlus({
+  className,
+  data = [],
+}: {
+  className: any;
+  data: any[];
+}) {
+  const totalExpense = useMemo(() => {
+    return (
+      data?.reduce((sum: number, element: any) => {
+        if (element?.type === "sale" || element?.type === "deposit") {
+          return sum + Number(element?.amount);
+        }
+        return sum;
+      }, 0) || 0
+    ); // منع القسمة على صفر
+  }, [data]);
+
+  const categoryTotals = useMemo(() => {
+    return data?.reduce(
+      (acc: Record<string, number>, element: any) => {
+        if (element?.type === "sale" || element?.type === "deposit") {
+          acc[element?.category] =
+            (acc[element?.category] || 0) + Number(element?.amount);
+        }
+        return acc;
+      },
+      { food: 0, drug: 0, animal: 0, setting: 0, else: 0 }
+    );
+  }, [data]);
+
+  const categories = [
+    {
+      label: "علف",
+      value: (categoryTotals?.food / totalExpense || 0) * 100,
+      color: "bg-primary",
+    },
+    {
+      label: "أدوية",
+      value: (categoryTotals?.drug / totalExpense || 0) * 100,
+      color: "bg-blue-500",
+    },
+    {
+      label: "ماشيه",
+      value: (categoryTotals?.animal / totalExpense || 0) * 100,
+      color: "bg-pink-500",
+    },
+    {
+      label: "صيانة",
+      value: (categoryTotals?.setting / totalExpense || 0) * 100,
+      color: "bg-yellow-500",
+    },
+    {
+      label: "أخرى",
+      value: (categoryTotals["else"] / totalExpense || 0) * 100,
+      color: "bg-red-500",
+    },
+  ];
+
   return (
     <div className={cn("w-full", className)}>
       <div className="h-full w-full rounded-lg p-4">
         <div className="flex h-full w-full flex-col justify-between gap-8">
-          {[
-            { label: "علف", value: 40, color: "bg-primary" },
-            { label: "أدوية", value: 25, color: "bg-blue-500" },
-            { label: "صيانة", value: 15, color: "bg-yellow-500" },
-            { label: "أخرى", value: 20, color: "bg-red-500" },
-          ].map((item, i) => (
+          {categories?.map((item, i) => (
             <div key={i} className="flex items-center gap-2">
               <span className="w-16 text-sm">{item.label}</span>
               <div className="flex-1 rounded-full bg-muted">
-                <div className={`h-4 rounded-full ${item.color}`} style={{ width: `${item.value}%` }} />
+                <div
+                  className={`h-4 rounded-full ${item.color}`}
+                  style={{ width: `${item.value}%` }}
+                />
               </div>
-              <span className="w-12 text-sm">{item.value}%</span>
+              <span className="w-12 text-sm">
+                {Number(item?.value)?.toFixed(2)}%
+              </span>
             </div>
           ))}
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 export function PieChart({ className }: ChartProps) {
@@ -68,7 +229,9 @@ export function PieChart({ className }: ChartProps) {
           />
           <div
             className="absolute inset-0 rounded-full border-8 border-yellow-500"
-            style={{ clipPath: "polygon(50% 50%, 100% 50%, 100% 100%, 50% 100%)" }}
+            style={{
+              clipPath: "polygon(50% 50%, 100% 50%, 100% 100%, 50% 100%)",
+            }}
           />
           <div
             className="absolute inset-0 rounded-full border-8 border-red-500"
@@ -85,12 +248,13 @@ export function PieChart({ className }: ChartProps) {
             <div key={i} className="flex items-center gap-2">
               <div className={`h-3 w-3 rounded-full ${item.color}`} />
               <span className="text-sm">{item.label}</span>
-              <span className="text-xs text-muted-foreground">{item.value}</span>
+              <span className="text-xs text-muted-foreground">
+                {item.value}
+              </span>
             </div>
           ))}
         </div>
       </div>
     </div>
-  )
+  );
 }
-

@@ -1,11 +1,18 @@
-"use client"
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Dialog,
   DialogContent,
@@ -13,33 +20,60 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
+} from "@/components/ui/dialog";
+import { createPermitsOne } from "@/constant/Permits.info";
+import { toast } from "@/hooks/use-toast";
 
 interface AddExpenseModalProps {
-  isOpen: boolean
-  onClose: () => void
+  isOpen: boolean;
+  onClose: () => void;
 }
 
 export function AddExpenseModal({ isOpen, onClose }: AddExpenseModalProps) {
-  const [date, setDate] = useState("")
-  const [category, setCategory] = useState("")
-  const [description, setDescription] = useState("")
-  const [amount, setAmount] = useState("")
-  const [responsiblePerson, setResponsiblePerson] = useState("")
+  const [date, setDate] = useState("");
+  const [type, setType] = useState<any>("");
+  const [category, setCategory] = useState<any>("");
+  const [description, setDescription] = useState<string>("");
+  const [amount, setAmount] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    // هنا يمكنك إضافة المنطق الخاص بإضافة المصروف الجديد
-    console.log("إضافة مصروف جديد:", { date, category, description, amount, responsiblePerson })
-    onClose()
-  }
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    // هنا يمكنك إضافة المنطق الخاص بإضافة العمليه الجديد
+    console.log("إضافة عمليه جديد:", {
+      date,
+      category,
+      description,
+      amount,
+    });
+
+    try {
+      if (type && category && description && amount && date) {
+        await createPermitsOne(
+          type,
+          category,
+          String(description),
+          amount,
+          date
+        );
+        toast({
+          variant: "default",
+          title: "تمت العمليه بنجاح",
+        });
+        onClose();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>إضافة مصروف جديد</DialogTitle>
-          <DialogDescription>أدخل معلومات المصروف الجديد هنا. اضغط على حفظ عند الانتهاء.</DialogDescription>
+          <DialogTitle>إضافة عمليه جديد</DialogTitle>
+          <DialogDescription>
+            أدخل معلومات العمليه الجديد هنا. اضغط على حفظ عند الانتهاء.
+          </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit}>
           <div className="grid gap-4 py-4">
@@ -59,15 +93,29 @@ export function AddExpenseModal({ isOpen, onClose }: AddExpenseModalProps) {
               <label htmlFor="category" className="text-right">
                 الفئة
               </label>
-              <Select value={category} onValueChange={setCategory}>
+              <Select value={type} onValueChange={setType}>
                 <SelectTrigger className="col-span-3">
-                  <SelectValue placeholder="اختر فئة المصروف" />
+                  <SelectValue placeholder="اختر نوع " />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="feed">علف</SelectItem>
-                  <SelectItem value="medication">أدوية</SelectItem>
-                  <SelectItem value="maintenance">صيانة</SelectItem>
-                  <SelectItem value="other">أخرى</SelectItem>
+                  <SelectItem value="expense">صرف</SelectItem>
+                  <SelectItem value="deposit">توريد</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <label htmlFor="category" className="text-right">
+                الفئة
+              </label>
+              <Select value={category} onValueChange={setCategory}>
+                <SelectTrigger className="col-span-3">
+                  <SelectValue placeholder="اختر فئة " />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="food">علف</SelectItem>
+                  <SelectItem value="drug">أدوية</SelectItem>
+                  <SelectItem value="setting">صيانة</SelectItem>
+                  <SelectItem value="else">أخرى</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -94,17 +142,6 @@ export function AddExpenseModal({ isOpen, onClose }: AddExpenseModalProps) {
                 className="col-span-3"
               />
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <label htmlFor="responsiblePerson" className="text-right">
-                المسؤول
-              </label>
-              <Input
-                id="responsiblePerson"
-                value={responsiblePerson}
-                onChange={(e) => setResponsiblePerson(e.target.value)}
-                className="col-span-3"
-              />
-            </div>
           </div>
           <DialogFooter>
             <Button type="submit">حفظ</Button>
@@ -112,6 +149,5 @@ export function AddExpenseModal({ isOpen, onClose }: AddExpenseModalProps) {
         </form>
       </DialogContent>
     </Dialog>
-  )
+  );
 }
-

@@ -15,6 +15,7 @@ import {
 } from "@/constant/LiveStock.info";
 import { ColumnDef } from "@tanstack/react-table";
 import { toast } from "@/hooks/use-toast";
+import Link from "next/link";
 
 interface Livestock {
   id: string;
@@ -41,6 +42,13 @@ export default function LivestockPage() {
     {
       header: "الرقم التعريفي",
       accessorKey: "idintifer_number",
+      cell: ({ row }) => <Link href={"/livestock/oneLiveStock"} onClick={async () => {
+        try {
+          localStorage.setItem("liveStock_id", row.original.id)
+        } catch (error) {
+          console.log(error)
+        }
+      }}>{row.original.idintifer_number}</Link>
     },
     {
       header: "السلالة",
