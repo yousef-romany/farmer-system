@@ -81,4 +81,12 @@ export const deleteLiveStockOne = async (id: number) => {
   }
 };
 
-export const fetchLiveStockOne = async () => {};
+export const fetchLiveStockOne = async (id: number) => {
+  const query = "SELECT livestock.*, barns.barns_name FROM livestock INNER JOIN barns ON livestock.barn_id = barns.id WHERE livestock.id = ?;";
+  try {
+    const rows = await (await db).select(query, [id]);
+    return rows;
+  } catch (error) {
+    console.log(error);
+  }
+};

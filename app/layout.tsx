@@ -12,7 +12,6 @@ const cairo = Cairo({ subsets: ["arabic"] })
 export const metadata: Metadata = {
   title: "نظام إدارة تربية المواشي",
   description: "نظام متكامل لإدارة تربية المواشي",
-    generator: 'v0.dev'
 }
 
 export default function RootLayout({

@@ -2,7 +2,7 @@
 
 import { MainNav } from "@/components/layout/main-nav"
 import { ModeToggle } from "@/components/mode-toggle"
-import { Notifications } from "@/components/notifications"
+// import { Notifications } from "@/components/notifications"
 import { MilkIcon as Cow, ChevronLeft, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
@@ -15,7 +15,7 @@ export function Sidebar() {
   return (
     <div
       className={cn(
-        "fixed top-0 right-0 z-40 h-full border-l transition-all duration-300",
+        "fixed top-0 right-0 z-40 h-full border-l transition-all duration-300 flex flex-col justify-between",
         isCollapsed ? "w-16" : "w-64",
       )}
     >
@@ -30,7 +30,7 @@ export function Sidebar() {
         <div className={cn("flex items-center gap-2", isCollapsed && "mx-auto")}>
           {!isCollapsed && (
             <>
-              <Notifications />
+              {/* <Notifications /> */}
               <ModeToggle />
             </>
           )}
@@ -48,11 +48,11 @@ export function Sidebar() {
             <div className="flex items-center gap-2">
               <div className="h-8 w-8 rounded-full bg-primary/10">
                 <span className="flex h-full w-full items-center justify-center text-sm font-medium text-primary">
-                  م
+                  د
                 </span>
               </div>
               <div>
-                <p className="text-sm font-medium">محمد أحمد</p>
+                <p className="text-sm font-medium">دير الرزيقات</p>
                 <p className="text-xs text-muted-foreground">مدير</p>
               </div>
             </div>
@@ -62,7 +62,7 @@ export function Sidebar() {
       {isCollapsed && (
         <div className="mt-auto border-t p-2 flex justify-center">
           <div className="h-8 w-8 rounded-full bg-primary/10">
-            <span className="flex h-full w-full items-center justify-center text-sm font-medium text-primary">م</span>
+            <span className="flex h-full w-full items-center justify-center text-sm font-medium text-primary">د</span>
           </div>
         </div>
       )}
